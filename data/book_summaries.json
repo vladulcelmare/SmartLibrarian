@@ -1,0 +1,170 @@
+[
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "year": 1949,
+    "genre": "Dystopian fiction",
+    "themes": ["freedom", "surveillance", "social control", "propaganda", "political oppression"],
+    "summary": "Winston Smith lives in a totalitarian society where the state watches its citizens, rewrites history, and punishes independent thought. His attempt to preserve personal freedom becomes a dangerous rebellion against an all-powerful regime."
+  },
+  {
+    "title": "The Hobbit",
+    "author": "J. R. R. Tolkien",
+    "year": 1937,
+    "genre": "Fantasy adventure",
+    "themes": ["friendship", "courage", "adventure", "magic", "self-discovery"],
+    "summary": "Bilbo Baggins leaves his comfortable home to join a company of dwarves on a quest to reclaim their lost kingdom and treasure. Along the journey, he encounters trolls, elves, spiders, dragons, and discovers unexpected courage within himself."
+  },
+  {
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "year": 1813,
+    "genre": "Romance",
+    "themes": ["love", "social class", "family", "marriage", "prejudice"],
+    "summary": "Elizabeth Bennet navigates family expectations, social pressure, and her changing feelings toward the wealthy and reserved Mr. Darcy. Their relationship challenges both characters to confront their assumptions about pride, class, and love."
+  },
+  {
+    "title": "The Lord of the Rings",
+    "author": "J. R. R. Tolkien",
+    "year": 1954,
+    "genre": "Epic fantasy",
+    "themes": ["friendship", "good versus evil", "sacrifice", "war", "courage"],
+    "summary": "Frodo Baggins must carry a powerful ring across Middle-earth so it can be destroyed before the dark lord Sauron uses it to dominate the world. The quest depends on loyalty, sacrifice, and the strength of unlikely heroes."
+  },
+  {
+    "title": "The Book Thief",
+    "author": "Markus Zusak",
+    "year": 2005,
+    "genre": "Historical fiction",
+    "themes": ["war", "grief", "books", "friendship", "resistance"],
+    "summary": "In Nazi Germany, young Liesel Meminger finds comfort and power in stolen books while her foster family hides a Jewish man. Through friendship and storytelling, she resists the cruelty surrounding her during wartime."
+  },
+  {
+    "title": "All Quiet on the Western Front",
+    "author": "Erich Maria Remarque",
+    "year": 1929,
+    "genre": "War fiction",
+    "themes": ["war", "trauma", "loss", "soldiers", "disillusionment"],
+    "summary": "Paul Bäumer and his classmates join the German army expecting honor and adventure, but experience the destruction and psychological damage of trench warfare. The novel portrays how war separates young soldiers from ordinary life."
+  },
+  {
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "year": 1988,
+    "genre": "Philosophical fiction",
+    "themes": ["dreams", "destiny", "self-discovery", "journey", "hope"],
+    "summary": "Santiago, a young shepherd, travels across deserts and cultures in pursuit of a recurring dream about treasure. His journey teaches him to recognize meaningful signs, follow his purpose, and understand that transformation matters as much as the destination."
+  },
+  {
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "year": 1960,
+    "genre": "Historical fiction",
+    "themes": ["racism", "justice", "empathy", "childhood", "moral courage"],
+    "summary": "Scout Finch grows up in a racially divided Alabama town while her father defends a Black man falsely accused of a crime. Through her family and community, Scout learns about injustice, compassion, and moral courage."
+  },
+  {
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "year": 1925,
+    "genre": "Classic fiction",
+    "themes": ["love", "wealth", "ambition", "the American Dream", "illusion"],
+    "summary": "Nick Carraway becomes involved with the mysterious millionaire Jay Gatsby, whose lavish lifestyle hides an obsessive hope to recover a lost love. The story explores ambition, social privilege, and the failure of romantic and material dreams."
+  },
+  {
+    "title": "Brave New World",
+    "author": "Aldous Huxley",
+    "year": 1932,
+    "genre": "Dystopian fiction",
+    "themes": ["technology", "social control", "consumerism", "freedom", "identity"],
+    "summary": "A technologically advanced society maintains stability by conditioning citizens, eliminating family bonds, and providing constant entertainment. When outsiders challenge this system, the novel asks whether comfort is worth surrendering freedom and individuality."
+  },
+  {
+    "title": "Fahrenheit 451",
+    "author": "Ray Bradbury",
+    "year": 1953,
+    "genre": "Dystopian fiction",
+    "themes": ["censorship", "books", "knowledge", "technology", "rebellion"],
+    "summary": "Guy Montag works as a fireman whose job is to burn books in a society that discourages reflection and difficult ideas. After meeting people who question the system, he begins searching for knowledge and a more meaningful life."
+  },
+  {
+    "title": "The Little Prince",
+    "author": "Antoine de Saint-Exupéry",
+    "year": 1943,
+    "genre": "Philosophical fantasy",
+    "themes": ["friendship", "love", "childhood", "loss", "meaning"],
+    "summary": "A pilot stranded in the desert meets a young prince who has travelled from a tiny asteroid and encountered strange adults on different planets. Their conversations reveal lessons about love, responsibility, loneliness, and seeing beyond appearances."
+  },
+  {
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": "J. K. Rowling",
+    "year": 1997,
+    "genre": "Fantasy",
+    "themes": ["friendship", "magic", "identity", "courage", "good versus evil"],
+    "summary": "Harry Potter discovers that he is a wizard and begins his first year at Hogwarts, where he forms lasting friendships and uncovers a threat connected to his past. The story combines magical discovery with loyalty, bravery, and the struggle against evil."
+  },
+  {
+    "title": "The Hunger Games",
+    "author": "Suzanne Collins",
+    "year": 2008,
+    "genre": "Dystopian adventure",
+    "themes": ["survival", "rebellion", "political oppression", "sacrifice", "media manipulation"],
+    "summary": "Katniss Everdeen volunteers to compete in a televised death match imposed by a powerful government. Her effort to survive while protecting others becomes a symbol of resistance for oppressed communities."
+  },
+  {
+    "title": "The Kite Runner",
+    "author": "Khaled Hosseini",
+    "year": 2003,
+    "genre": "Historical fiction",
+    "themes": ["friendship", "guilt", "redemption", "family", "war"],
+    "summary": "Amir grows up in Afghanistan with his loyal friend Hassan, but a moment of betrayal shapes his life for years. After political upheaval changes their country, Amir returns to confront his guilt and seek a chance for redemption."
+  },
+  {
+    "title": "The Name of the Wind",
+    "author": "Patrick Rothfuss",
+    "year": 2007,
+    "genre": "Epic fantasy",
+    "themes": ["music", "magic", "knowledge", "trauma", "ambition"],
+    "summary": "Kvothe recounts his journey from a gifted travelling musician to a brilliant student of magic and legend. His search for knowledge and answers about a mysterious group is shaped by talent, loss, ambition, and dangerous secrets."
+  },
+  {
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "year": 2011,
+    "genre": "Science fiction",
+    "themes": ["survival", "science", "space exploration", "problem solving", "perseverance"],
+    "summary": "After being left behind on Mars, astronaut Mark Watney must use engineering, science, and creativity to stay alive while Earth attempts to rescue him. The novel focuses on practical problem solving and determination under extreme conditions."
+  },
+  {
+    "title": "The Road",
+    "author": "Cormac McCarthy",
+    "year": 2006,
+    "genre": "Post-apocalyptic fiction",
+    "themes": ["survival", "parenthood", "hope", "love", "moral choices"],
+    "summary": "A father and son travel through a devastated landscape after an unnamed catastrophe. With scarce resources and constant danger, the father tries to protect his son while preserving compassion and hope in a broken world."
+  },
+  {
+    "title": "One Hundred Years of Solitude",
+    "author": "Gabriel García Márquez",
+    "year": 1967,
+    "genre": "Magical realism",
+    "themes": ["family", "memory", "history", "solitude", "political conflict"],
+    "summary": "The Buendía family builds and repeatedly transforms the town of Macondo across several generations. Magical events blend with political upheaval and personal tragedy as the family struggles with patterns of memory, isolation, and repetition."
+  },
+  {
+    "title": "The Handmaid's Tale",
+    "author": "Margaret Atwood",
+    "year": 1985,
+    "genre": "Dystopian fiction",
+    "themes": ["gender oppression", "freedom", "religion", "resistance", "identity"],
+    "summary": "In the authoritarian state of Gilead, women are stripped of their rights and fertile women are forced into reproductive servitude. Offred quietly remembers her former life while looking for ways to resist and reclaim her identity."
+  },
+  {
+    "title": "The Old Man and the Sea",
+    "author": "Ernest Hemingway",
+    "year": 1952,
+    "genre": "Literary fiction",
+    "themes": ["perseverance", "dignity", "nature", "loneliness", "struggle"],
+    "summary": "Santiago, an aging Cuban fisherman, ventures far into the sea and battles a powerful marlin. His struggle becomes a meditation on endurance, dignity, defeat, and the relationship between human beings and nature."
+  }
+]
