@@ -10,7 +10,7 @@ st.markdown(
     <style>
     .block-container { 
     max-width: 1100px; 
-    padding-top: 5rem;
+    padding-top: 3.5rem;
     }
 
     .hero { 
@@ -43,15 +43,19 @@ st.markdown(
     color: rgba(255, 255, 255, 1);
     }
 
+    section[data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
+    height: 2.25rem;
+    margin-bottom: 0;
+    }
+
     section[data-testid="stSidebar"] h1,
     section[data-testid="stSidebar"] h2,
     section[data-testid="stSidebar"] h3 {
     text-align: center;
+    margin-top: 0;
     }
 
-    section[data-testid="stSidebar"] .block-container {
-    padding-top: 1.5rem;
-    }
+   
     </style>
     """,
     unsafe_allow_html=True,
@@ -72,6 +76,8 @@ st.markdown(
 
 
 with st.sidebar:
+    
+
     st.header("Settings")
     st.markdown('<div class="status">Demo mode — backend is yet to be connected</div>', 
                 unsafe_allow_html=True)
@@ -120,7 +126,7 @@ if user_message or sample:
     st.session_state.messages.append(
         {
             "role": "user",
-            "content": user_message,
+            "content": user_message if user_message is not None else sample,
         }
     )
 

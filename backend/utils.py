@@ -3,6 +3,7 @@ def fetch_data() -> dict:
     import json
 
     file_path = os.path.abspath("data\\book_summaries.json")
+    print(file_path)
 
     data = {}
     data["book_summaries"] = json.load(open(file_path, "r", encoding="utf-8"))
@@ -21,7 +22,6 @@ def fetch_data() -> dict:
 
     return final_data
 
-
 def format_answer(x) -> str:
     return (
         x.answer + '\n\n' +
@@ -38,10 +38,13 @@ def filter_explicitlanguage(text: str) -> bool:
     """
     Filters out explicit language from the given text.
     """
-    # List of explicit words to filter out
-    explicit_words = [""]  # Replace with actual words
+    import os
 
-    for word in explicit_words:
-        text = text.replace(word, "[censored]")
+    file_path = os.path.abspath("data\\sensitive_words.txt")
+
+    # List of explicit words to filter out
+    
+    with open(file_path, "r", encoding="utf-8") as f:
+        explicit_words = [line.strip() for line in f.readlines()]
 
     return False
