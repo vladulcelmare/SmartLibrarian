@@ -1,11 +1,11 @@
+from pathlib import Path
+import json
+import unicodedata
 from backend.config import Recommendation
 
 def fetch_data() -> dict:
-    import os
-    import json
-
-    file_path = os.path.abspath("data\\book_summaries.json")
-    print(file_path)
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    file_path = BASE_DIR / "data" / "book_summaries.json"
 
     data = {}
     data["book_summaries"] = json.load(open(file_path, "r", encoding="utf-8"))
@@ -36,17 +36,45 @@ def format_answer(x : Recommendation) -> str:
         (f"Image URL: {x.image_url}" if x.image_url else "")
     )
 
-def filter_explicitlanguage(text: str) -> bool:
+def filter_explicitlanguage(text : str):
     """
     Filters out explicit language from the given text.
     """
-    import os
 
-    file_path = os.path.abspath("data\\sensitive_words.txt")
+    import re
+    import unicodedata
 
-    # List of explicit words to filter out
+    def normalise_text(text : str) -> str:
+        """
+        Helper function to normalise text and include unicode characters.
+        """
+
+        text = unicodedata.normalize("NFKC", text)
+        text = text.casefold()
+
+        words = re.findall(r"\w+", text, flags=re.UNICODE)
+        return " ".join(words)
+
+
+    if text is None:
+        return
+
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    file_path = BASE_DIR / "data" / "sensitive_words.txt"
+
+    text = normalise_text(text)
     
     with open(file_path, "r", encoding="utf-8") as f:
-        explicit_words = [line.strip() for line in f.readlines()]
+        explicit_words = [normalise_text(line.strip()) for line in f.readlines() if line is not None]
 
+    if isinstance(text, str):
+        for word in explicit_words:
+            if word == text:
+                return True
+
+    elif isinstance(text, list):
+        for word in explicit_words:
+            if word in text:
+                return True
+            
     return False
