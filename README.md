@@ -16,8 +16,8 @@ By running the commands under in the specified order, the user opens the webpage
 
 ```powershell
 cd .\SmartLibrarian
-uv venv --python 3.14
-uv pip install --python .venv\Scripts\python.exe streamlit openai chromadb
+uv venv --python 3.13.14
+uv pip install --python .venv\Scripts\python.exe streamlit openai chromadb python-dotenv
 $env:PYTHONPATH = (Get-Location).Path
 uv run --python .venv\Scripts\python.exe python -m backend.database_load
 uv run --python .venv\Scripts\python.exe streamlit run frontend/app.py

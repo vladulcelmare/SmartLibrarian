@@ -1,10 +1,10 @@
 import streamlit as st
-from frontend.api import get_recommendation
+from api import get_recommendation
 from backend.utils import format_answer
 from datetime import date
 
 
-st.set_page_config(page_title="Smart Librarian", page_icon="", layout="wide")
+st.set_page_config(page_title = "Smart Librarian", page_icon = "", layout = "wide")
 st.markdown(
     """
     <style>
@@ -58,7 +58,7 @@ st.markdown(
    
     </style>
     """,
-    unsafe_allow_html=True,
+    unsafe_allow_html = True,
 )
 
 if "messages" not in st.session_state:
@@ -71,7 +71,7 @@ st.markdown(
     '<div class="hero"><h1>Smart Librarian</h1>'
     '<p>Book recommendations based on your preferences'
     '</p></div>',
-    unsafe_allow_html=True,
+    unsafe_allow_html = True,
 )
 
 
@@ -84,9 +84,9 @@ with st.sidebar:
     st.divider()
 
     st.subheader("Options")
-    enable_tts = st.checkbox("Text-to-speech", disabled=True, help="Not yet implemented")
-    enable_voice = st.checkbox("Voice mode", disabled=True, help="Not yet implemented")
-    enable_image = st.checkbox("Image generation", disabled=True, help="Not yet implemented")
+    enable_tts = st.checkbox("Text-to-speech", disabled = True, help = "Not yet implemented")
+    enable_voice = st.checkbox("Voice mode", disabled = True, help = "Not yet implemented")
+    enable_image = st.checkbox("Image generation", disabled = True, help = "Not yet implemented")
     st.divider()
 
     if st.button("New conversation", use_container_width=True):
@@ -111,9 +111,9 @@ sample = st.pills(
         f"Top ten books of {date.today().year}",
     ],
     
-    selection_mode="single",
-    key="sample_questions",
-    label_visibility="collapsed"
+    selection_mode = "single",
+    key = "sample_questions",
+    label_visibility = "collapsed"
 )
 
 for message in st.session_state.messages:

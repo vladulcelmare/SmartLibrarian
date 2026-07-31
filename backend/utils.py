@@ -1,3 +1,5 @@
+from backend.config import Recommendation
+
 def fetch_data() -> dict:
     import os
     import json
@@ -22,7 +24,7 @@ def fetch_data() -> dict:
 
     return final_data
 
-def format_answer(x) -> str:
+def format_answer(x : Recommendation) -> str:
     return (
         x.answer + '\n\n' +
         (f"Title: {x.title}" if x.title else "") +
