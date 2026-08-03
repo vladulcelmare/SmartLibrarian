@@ -40,8 +40,8 @@ def embed(text : str):
 
     global openai_client
     response = openai_client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text
+        model = EMBEDDING_MODEL,
+        input = text
     )
     return response.data[0].embedding
 
