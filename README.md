@@ -12,13 +12,14 @@ The user must have installed the following items :
 * **Streamlit**
 * **ChromaDB**
 * **OpenAI** with a functional key.
+* **pyodbc**
 
 # Frontend
 
 The interface is built using Streamlit Python package. It features the classic Streamlit interface (including theme selector).<br>
 Additions : 
 * Left-side sidebar with settings
-* User-choice TTS, image generation
+* User-choice TTS, STT, image generation
 * "New conversation" button which resets current chat
 * Sample questions
 
@@ -34,7 +35,7 @@ Recommended : ensure it is in .gitignore, to avoid exposing the key.
 ```powershell
 cd .\SmartLibrarian
 uv venv --python 3.13.14
-uv pip install --python .venv\Scripts\python.exe streamlit openai chromadb python-dotenv
+uv pip install --python .venv\Scripts\python.exe streamlit openai chromadb python-dotenv pyodbc "streamlit[auth]"
 ```
 
 # How to run

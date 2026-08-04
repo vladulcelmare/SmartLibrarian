@@ -3,10 +3,42 @@ import json
 from backend.api import get_recommendation, call_function
 from backend.utils import format_answer, filter_explicit_language
 from backend.config import openai_client, CHAT_MODEL, CHAT_TOOLS, SYSTEM_PROMPT
+import backend.users as users
 from datetime import date
 
 # main page configuration
 st.set_page_config(page_title = "Smart Librarian", page_icon = "", layout = "wide")
+
+if "auth_mode" not in st.session_state:
+    st.session_state.auth_mode = None
+
+@st.dialog("Login page")
+def login_dialog():
+    st.write("Welcome to Smart Librarian! Click below to sign in/register or continue as a guest.")
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("Sign in / Register", use_container_width=True):
+            st.login("google")
+
+    with c2:
+        if st.button("Continue as guest", use_container_width=True):
+            st.session_state.auth_mode = "guest"
+            st.rerun()
+
+is_logged_in = getattr(st.user, "is_logged_in", False)
+if not is_logged_in and st.session_state.auth_mode is None:
+    login_dialog()
+
+
+user_id = st.user.sub if is_logged_in else None
+
+if is_logged_in:
+    users.ensure_user(
+        user_id,
+        getattr(st.user, "name", user_id),
+        getattr(st.user, "email", user_id),
+    )
+
 
 st.markdown(
     """
@@ -86,16 +118,6 @@ st.markdown(
 
 # sidebar
 with st.sidebar:
-    st.header("Settings")
-    st.markdown('<div class="status">Demo mode — backend is yet to be connected</div>', 
-                unsafe_allow_html=True)
-    st.divider()
-
-    st.subheader("Options")
-    enable_tts = st.checkbox("Text-to-speech", disabled = True, help = "Not yet implemented")
-    enable_voice = st.checkbox("Voice mode", disabled = True, help = "Not yet implemented")
-    enable_image = st.checkbox("Image generation", disabled = True, help = "Not yet implemented")
-    st.divider()
 
     # reset conversation button
     if st.button("New conversation", use_container_width=True):
@@ -104,9 +126,63 @@ with st.sidebar:
                 "content": "Hello! Tell me what kind of story you would like to read.",
             }]
         st.session_state.input_messages = []
+        st.session_state.pop("conversation_id", None)
         st.session_state["sample_questions"] = None
         st.rerun()
+            
     st.divider()
+        
+    st.header("Settings")
+
+    if is_logged_in:
+        st.info(f"Logged in as: {st.user.name}", title = "User info")
+
+        conversations = users.retrieve_conversation(user_id)
+
+        if conversations:
+            st.subheader("Recent conversations")
+            for conv_id, title, creation_date in conversations:
+                st.write(f"**{title}** - {creation_date.strftime('%Y-%m-%d')}")
+                if st.button(f"Continue conversation", key=f"continue_{conv_id}", use_container_width=True):
+                    saved_messages = users.load_conversation(conv_id)
+                    st.session_state.conversation_id = conv_id
+                    st.session_state.messages = [
+                        {"role": role, "content": content}
+                        for content, role in saved_messages
+                    ]
+                    st.session_state.input_messages = [
+                        {"role": role, "content": content}
+                        for content, role in saved_messages
+                    ]
+                    st.rerun()
+                    
+                if st.button(f"Delete conversation", key=f"delete_{conv_id}", use_container_width=True):
+                                    users.delete_conversation(conv_id)
+                                    st.session_state.conversation_id = None
+                                    st.session_state.messages = [{
+                                        "role": "assistant",
+                                        "content": "Hello! Tell me what kind of story you would like to read.",
+                                    }]
+                                    st.session_state.input_messages = []
+                                    st.rerun()
+
+        if st.button("Logout", use_container_width=True):
+            st.logout()
+    else:
+        st.info("Guest mode", title = "User info")
+
+        if st.button("Login", use_container_width=True):
+            st.login("google")
+
+    st.divider()
+
+    st.subheader("Options")
+    enable_tts = st.checkbox("Text-to-speech", disabled = True, help = "Not yet implemented")
+    enable_voice = st.checkbox("Voice mode", disabled = True, help = "Not yet implemented")
+    enable_image = st.checkbox("Image generation", disabled = True, help = "Not yet implemented")
+    st.divider()
+
+    
 
     st.caption("Smart Librarian app, demo project developed by LVTA®, 2026. \nPowered by Streamlit and OpenAI. All rights reserved.")
 
@@ -140,6 +216,13 @@ user_message = st.chat_input("Ask away about any book or story you want to read"
 ## if the user has sent a message or selected a sample question, we process it
 if user_message or sample:
     current_input = user_message if user_message is not None else sample
+
+    if is_logged_in:
+        conversation_id = st.session_state.get("conversation_id")
+        if conversation_id is None:
+            conversation_id = users.new_conversation(user_id, current_input[:100])
+            st.session_state.conversation_id = conversation_id
+        users.add_message(conversation_id, current_input, "user")
 
     st.session_state.messages.append(
         {
@@ -208,6 +291,7 @@ if user_message or sample:
                             "success": False,
                             "error": "The local book database could not be queried.",
                         }
+                        
                     ## we append the result of first tool call
                     turn_messages.append({
                         "type": "function_call_output",
@@ -219,14 +303,17 @@ if user_message or sample:
 
                 ## now second request to chatbot where it makes the answer more human readable
                 response = openai_client.responses.create(
-                    model=CHAT_MODEL,
-                    instructions=SYSTEM_PROMPT,
-                    tools=CHAT_TOOLS,
-                    input=turn_messages,
+                    model = CHAT_MODEL,
+                    instructions = SYSTEM_PROMPT,
+                    tools = CHAT_TOOLS,
+                    input = turn_messages,
                 )
 
                 answer = response.output_text
+                if not answer or not answer.strip():
+                    answer = "Sorry, I could not find any recommendations based on your request."
                 turn_messages += response.output
+                
             status.update(
                 label="Answer ready!",
                 state="complete",
@@ -249,3 +336,6 @@ if user_message or sample:
             "role": "assistant",
             "content": answer,
         })
+
+        if is_logged_in:
+            users.add_message(st.session_state.conversation_id, answer, "assistant")

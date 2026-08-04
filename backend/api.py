@@ -10,7 +10,7 @@ def call_function(function_name: str, arguments: dict):
     """
     Calls the appropriate function based on the provided function name and arguments."""
     if function_name == "get_summary_by_title":
-        return get_summary_by_title(arguments["title"], arguments.get("history", []))
+        return get_summary_by_title(arguments["title"])
     
     elif function_name == "get_recommendation":
         return get_recommendation(arguments["question"], arguments.get("top_k") or 3)
@@ -48,7 +48,7 @@ def search_for_books(question: str, top_k: int = 3) -> list[dict]:
     return matches
 
 
-def get_recommendation(question: str, history: list[dict[str, str]], top_k: int = 3) -> list[Recommendation]:
+def get_recommendation(question: str,  top_k: int = 3) -> list[Recommendation]:
     """
     Searches for book recommendations based on the provided question and returns a list of Recommendation objects.
     """
