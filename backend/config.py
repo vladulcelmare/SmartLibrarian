@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 EMBEDDING_MODEL = "text-embedding-3-small"
 CHAT_MODEL = "gpt-5.6-luna"
+CHAT_VOICEMODEL = "gpt-4o-mini-tts"
 
 load_dotenv(BASE_DIR / ".env")
 openai_client = OpenAI()

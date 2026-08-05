@@ -2,36 +2,41 @@ import streamlit as st
 import json
 from backend.api import get_recommendation, call_function
 from backend.utils import format_answer, filter_explicit_language
-from backend.config import openai_client, CHAT_MODEL, CHAT_TOOLS, SYSTEM_PROMPT
+from backend.config import openai_client, CHAT_MODEL, CHAT_VOICEMODEL, CHAT_TOOLS, SYSTEM_PROMPT
 import backend.users as users
 from datetime import date
+import random
 
 # main page configuration
 st.set_page_config(page_title = "Smart Librarian", page_icon = "", layout = "wide")
 
+# get user authentication status
 if "auth_mode" not in st.session_state:
     st.session_state.auth_mode = None
 
+# mini popup with two buttons from which to select login or guest 
 @st.dialog("Login page")
 def login_dialog():
     st.write("Welcome to Smart Librarian! Click below to sign in/register or continue as a guest.")
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("Sign in / Register", use_container_width=True):
+        if st.button("Sign in / Register", use_container_width = True):
             st.login("google")
 
     with c2:
-        if st.button("Continue as guest", use_container_width=True):
+        if st.button("Continue as guest", use_container_width = True):
             st.session_state.auth_mode = "guest"
             st.rerun()
 
+# checks the authetication status, if not logged in and no mode set, prompt popup
 is_logged_in = getattr(st.user, "is_logged_in", False)
 if not is_logged_in and st.session_state.auth_mode is None:
     login_dialog()
 
-
+# get user id if logged in
 user_id = st.user.sub if is_logged_in else None
 
+# if its a valid user we put in database if not already there
 if is_logged_in:
     users.ensure_user(
         user_id,
@@ -120,7 +125,7 @@ st.markdown(
 with st.sidebar:
 
     # reset conversation button
-    if st.button("New conversation", use_container_width=True):
+    if st.button("New conversation", use_container_width = True):
         st.session_state.messages = [{
                 "role": "assistant",
                 "content": "Hello! Tell me what kind of story you would like to read.",
@@ -134,50 +139,57 @@ with st.sidebar:
         
     st.header("Settings")
 
+    # user info logic
     if is_logged_in:
         st.info(f"Logged in as: {st.user.name}", title = "User info")
 
+        # retrieve all conversations not older than 7days for the current user and display in sidebar
         conversations = users.retrieve_conversation(user_id)
 
         if conversations:
             st.subheader("Recent conversations")
             for conv_id, title, creation_date in conversations:
                 st.write(f"**{title}** - {creation_date.strftime('%Y-%m-%d')}")
-                if st.button(f"Continue conversation", key=f"continue_{conv_id}", use_container_width=True):
+
+                if st.button(f"Continue conversation", key = f"continue_{conv_id}", use_container_width = True):
                     saved_messages = users.load_conversation(conv_id)
                     st.session_state.conversation_id = conv_id
                     st.session_state.messages = [
                         {"role": role, "content": content}
                         for content, role in saved_messages
                     ]
+
                     st.session_state.input_messages = [
                         {"role": role, "content": content}
                         for content, role in saved_messages
                     ]
                     st.rerun()
                     
-                if st.button(f"Delete conversation", key=f"delete_{conv_id}", use_container_width=True):
-                                    users.delete_conversation(conv_id)
-                                    st.session_state.conversation_id = None
-                                    st.session_state.messages = [{
-                                        "role": "assistant",
-                                        "content": "Hello! Tell me what kind of story you would like to read.",
-                                    }]
-                                    st.session_state.input_messages = []
-                                    st.rerun()
+                if st.button(f"Delete conversation", key = f"delete_{conv_id}", use_container_width = True):
+                    users.delete_conversation(conv_id)
+                    st.session_state.conversation_id = None
+                    st.session_state.messages = [
+                        {"role": "assistant",
+                        "content": "Hello! Tell me what kind of story you would like to read.",
+                        }]
+                    st.session_state.input_messages = []
+                    st.rerun()
 
-        if st.button("Logout", use_container_width=True):
+        if st.button("Logout", use_container_width = True):
+            st.session_state["sample_questions"] = None
             st.logout()
+
     else:
         st.info("Guest mode", title = "User info")
 
-        if st.button("Login", use_container_width=True):
+        if st.button("Login", use_container_width = True):
+            st.session_state["sample_questions"] = None
             st.login("google")
 
     st.divider()
 
     st.subheader("Options")
-    enable_tts = st.checkbox("Text-to-speech", disabled = True, help = "Not yet implemented")
+    
     enable_voice = st.checkbox("Voice mode", disabled = True, help = "Not yet implemented")
     enable_image = st.checkbox("Image generation", disabled = True, help = "Not yet implemented")
     st.divider()
@@ -187,6 +199,9 @@ with st.sidebar:
     st.caption("Smart Librarian app, demo project developed by LVTA®, 2026. \nPowered by Streamlit and OpenAI. All rights reserved.")
 
 st.caption("Sample questions")
+def select_sample_question():
+    st.session_state["pending_sample"] = st.session_state["sample_questions"]
+    st.session_state["sample_questions"] = None
 
 sample = st.pills(
     "Sample questions",
@@ -199,13 +214,25 @@ sample = st.pills(
     
     selection_mode = "single",
     key = "sample_questions",
+    on_change = select_sample_question,
     label_visibility = "collapsed"
 )
 
-# display initial message
-for message in st.session_state.messages:
+# display initial message(s)
+for index, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.write(message["content"])
+
+        if message["role"] == "assistant":
+            if st.button("🔊", key = f"tts_{index}"):
+                
+                response = openai_client.audio.speech.create(
+                    model = CHAT_VOICEMODEL,
+                    voice = "alloy",
+                    input = message["content"],
+                )
+
+                st.audio(response.read(), format = "audio/mp3")
 
 # input box for user to ask questions
 user_message = st.chat_input("Ask away about any book or story you want to read")
@@ -214,13 +241,15 @@ user_message = st.chat_input("Ask away about any book or story you want to read"
 # message loop logic
 
 ## if the user has sent a message or selected a sample question, we process it
+sample = st.session_state.pop("pending_sample", None)
+
 if user_message or sample:
     current_input = user_message if user_message is not None else sample
 
     if is_logged_in:
         conversation_id = st.session_state.get("conversation_id")
         if conversation_id is None:
-            conversation_id = users.new_conversation(user_id, current_input[:100])
+            conversation_id = users.new_conversation(user_id, current_input)
             st.session_state.conversation_id = conversation_id
         users.add_message(conversation_id, current_input, "user")
 
@@ -261,10 +290,10 @@ if user_message or sample:
 
                 ## first request to the chatbot to fetch the answer and the tool calls, if any
                 response = openai_client.responses.create(
-                    model=CHAT_MODEL,
-                    instructions=SYSTEM_PROMPT,
-                    tools=CHAT_TOOLS,
-                    input=turn_messages,
+                    model = CHAT_MODEL,
+                    instructions = SYSTEM_PROMPT,
+                    tools = CHAT_TOOLS,
+                    input = turn_messages,
                 )
 
                 turn_messages += response.output
@@ -315,8 +344,8 @@ if user_message or sample:
                 turn_messages += response.output
                 
             status.update(
-                label="Answer ready!",
-                state="complete",
+                label = "Answer ready!",
+                state = "complete",
             )
         ## failsafe for errors
         except Exception:
@@ -331,6 +360,15 @@ if user_message or sample:
         ## display and append
         with st.chat_message("assistant"):
             st.write(answer)
+            if st.button("🔊", key=f"tts_{st.session_state.conversation_id}_{len(st.session_state.messages)}" if st.session_state.auth_mode != "guest" else f"tts_{len(st.session_state.messages) * random.randint(0,1000)}"):
+
+                response = openai_client.audio.speech.create(
+                    model = CHAT_VOICEMODEL,
+                    voice = "alloy",
+                    input = answer,
+                )
+
+                st.audio(response.read(), format = "audio/mp3")
 
         st.session_state.messages.append({
             "role": "assistant",
@@ -339,3 +377,5 @@ if user_message or sample:
 
         if is_logged_in:
             users.add_message(st.session_state.conversation_id, answer, "assistant")
+
+        
