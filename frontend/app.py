@@ -1,7 +1,7 @@
 import streamlit as st
 import json
 from backend.api import get_recommendation, call_function
-from backend.utils import format_answer, filter_explicit_language
+from backend.utils import format_answer, filter_explicit_language, fetch_data
 from backend.config import openai_client, CHAT_MODEL, CHAT_VOICEMODEL, CHAT_TOOLS, SYSTEM_PROMPT
 import backend.users as users
 from datetime import date
@@ -191,7 +191,34 @@ with st.sidebar:
     st.subheader("Options")
     
     enable_voice = st.checkbox("Voice mode", disabled = True, help = "Not yet implemented")
-    enable_image = st.checkbox("Image generation", disabled = True, help = "Not yet implemented")
+    enable_image = st.checkbox("Image generation", disabled = False, help = "Image generation, a drop down box from which user can select title")
+
+    if enable_image:
+        @st.dialog("Image generation")
+        def generate_image():
+            data = fetch_data()
+
+            st.write("Please select a title to generate an image for")
+
+            title = st.selectbox("Choose title", [item["pretty_title"] for item in data.values()])
+            summary = data[title.upper()]["summary"]
+
+            if st.button("Generate image", use_container_width = True):
+                with st.spinner("Generating image..."):
+                    response = openai_client.images.generate(
+                        model = "gpt-image-1",
+                        prompt = f"Generate an image for the book '{title}' based on the following summary: {summary}",
+                        size = "1024x1024",
+                        quality = "medium"
+                    )
+
+                    import base64
+
+                    image_data = base64.b64decode(response.data[0].b64_json)
+                    st.image(image_data, caption = f"Generated image for '{title}'", width = "stretch")
+
+        generate_image()
+
     st.divider()
 
     
