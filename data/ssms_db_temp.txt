@@ -1,0 +1,66 @@
+
+# this should serve as a template for your database to know how it works behind.
+# if you want the app to work, you must have this structure set in ssms (read README for a more detailed explanation)
+
+CREATE DATABASE users_content;
+go
+
+use users_content;
+go
+
+create schema users;
+go
+
+create table users.user_login
+(
+	userid varchar(256) primary key,
+
+	username varchar(100) not null,
+	user_email varchar(256) not null
+);
+go
+
+create table users.user_sensitive_info
+(
+	userid varchar(256) not null,
+	foreign key (userid) references users.user_login(userid),
+
+	user_paswd_hash varchar(256) not null
+);
+go
+
+create schema chats;
+go
+
+create table chats.conversations
+(
+	userid varchar(256) not null,
+	foreign key (userid) references users.user_login(userid),
+	conversation_id varchar(100) primary key,
+
+	title varchar(100) not null,
+	creation_date DATE not null
+
+);
+go
+
+create table chats.messages
+(
+	message_id INT IDENTITY primary key,
+	conversation_id varchar(100) not null,
+	foreign key (conversation_id) references chats.conversations(conversation_id),
+
+	content nvarchar(max) not null,
+	chat_role varchar(20) not null
+
+);
+go
+
+USE users_content;
+
+SELECT DB_NAME() AS database_name;
+SELECT OBJECT_ID('chats.conversations') AS conversations_table;
+SELECT OBJECT_ID('chats.messages') AS messages_table;
+
+SELECT * FROM chats.messages
+SELECT * FROM chats.conversations

@@ -8,7 +8,7 @@ Demo project written fully in Python 3.13.
 The user must have installed the following items :
 * **uv**
 * **dotenv**
-* **Python**
+* **Python 3.13**
 * **Streamlit**
 * **ChromaDB**
 * **OpenAI** with a functional key.
@@ -23,14 +23,14 @@ Additions :
 * "New conversation" button which resets current chat
 * Sample questions
 * Text-To-Speech enabled at each reply from the chatbot
-* Multilanguage support
+* Multi-language support
 * Explicit language filtering
 
 # Backend
 
 Consists of :
 * A database built with ChromaDB that stores the user-selected books in .json format, found in **book_summaries.json**
-* A second database built with SSMS that logs each new connected user, alongside their complete chat history
+* A second database built with SSMS 21.6 that logs each new connected user, alongside their complete chat history
 * Response loop logic built with OpenAI API consisting of two requests to the model in the **config.py** file
 * Response management tools offered to the chatbot such as **get_summary_by_title** and **get_recommendation**
 * Other configurations in **config.py**, helper functions in **utils.py**
@@ -38,7 +38,7 @@ Consists of :
 
 # Installation guide
 
-Before executing the commands written bellow, the user must have a functional OpenAI key stored in a .env file. The .env file must be in the same directory as the project (SmartLibrarian).<br>
+Before executing the commands written below, the user must have a functional OpenAI key stored in a .env file. The .env file must be in the same directory as the project (SmartLibrarian).<br>
 Recommended : ensure it is in .gitignore, to avoid exposing the key.
 
 ```powershell
@@ -57,8 +57,12 @@ uv run --python .venv\Scripts\python.exe streamlit run frontend/app.py;
 
 # Mentions
 
-This repository uses [github.com/profanity-list](https://github.com/dsojevic/profanity-list/blob/main/en.txt) as data for the explicit language filter, the **en.txt** file having been saved in 
-**SmartLibrarian/data/sensitive_words.txt**.<br>
+This repository uses [github.com/profanity-list](https://github.com/dsojevic/profanity-list/blob/main/en.txt) as data for the explicit language filter, the **en.txt** file having been saved in **SmartLibrarian/data/sensitive_words.txt**.<br>
+
 The language used is with no ill intent, only for the sole purpose of ensuring a respectful conversation. Any word/phrase encountered will be met with a polite reply.<br>
-If the user decides to modify the current book database, they must upload the new data in a .json file in the data directory. Any other format is not compatible.<br>
-The user must have setup a local database in SSMSS that copies the content of the file **xx** and must have a local container hosted to connect to it. In order to connect, the user must manage the file **secrets.toml** and add the location of the database alongside other details in the **.env** file. Ensure these are added in .gitignore.
+
+If the user decides to modify the current book database, they must upload the new data in a .json file in the **data** directory, replacing the **book_summaries.json** content. Any other format is not compatible.<br>
+
+The user must have setup a local database in SSMS compatible with the version found in **users.py** that copies the content of the file **ssms_db_temp.txt** and must have a local container hosted to connect to it. In order to connect, the user must manage the file **secrets.toml** and add the location of the database alongside other details in the **.env** file. Ensure these are added in .gitignore.<br>
+
+Sadly, the current python packages used (besides OpenAI) are not fully compatible with asynchronous processing.
