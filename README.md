@@ -19,7 +19,7 @@ The user must have installed the following items :
 The interface is built using Streamlit Python package. It features the classic Streamlit interface (including theme selector).<br>
 Additions : 
 * Left-side sidebar with settings
-* User-selection image generation (pending), Speech-To-Text (pending)
+* User-selection image generation, Speech-To-Text (pending)
 * "New conversation" button which resets current chat
 * Sample questions
 * Text-To-Speech enabled at each reply from the chatbot
