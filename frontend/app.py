@@ -111,6 +111,9 @@ if "messages" not in st.session_state:
 if "input_messages" not in st.session_state:
     st.session_state.input_messages = []
 
+if "voice_notes" not in st.session_state:
+    st.session_state.voice_notes = {}
+
 
 
 # banner
@@ -191,7 +194,7 @@ with st.sidebar:
     st.subheader("Options")
     
     enable_voice = st.checkbox("Voice mode", disabled = True, help = "Not yet implemented")
-    enable_image = st.checkbox("Image generation", disabled = False, help = "Image generation, a drop down box from which user can select title")
+    enable_image = st.button("Image generation", use_container_width = True, help = "Image generation, a drop down box from which user can select title")
 
     if enable_image:
         @st.dialog("Image generation")
@@ -251,6 +254,7 @@ for index, message in enumerate(st.session_state.messages):
         st.write(message["content"])
 
         if message["role"] == "assistant":
+            audio_key = f"tts_{index}"
             if st.button("🔊", key = f"tts_{index}"):
                 
                 response = openai_client.audio.speech.create(
@@ -259,7 +263,10 @@ for index, message in enumerate(st.session_state.messages):
                     input = message["content"],
                 )
 
-                st.audio(response.read(), format = "audio/mp3")
+                st.session_state.voice_notes[audio_key] = response.read()
+
+            if audio_key in st.session_state.voice_notes:
+                st.audio(st.session_state.voice_notes[audio_key], format = "audio/mp3")
 
 # input box for user to ask questions
 user_message = st.chat_input("Ask away about any book or story you want to read")
@@ -387,6 +394,7 @@ if user_message or sample:
         ## display and append
         with st.chat_message("assistant"):
             st.write(answer)
+            audio_key = f"tts_{len(st.session_state.messages)}"
             if st.button("🔊", key=f"tts_{st.session_state.conversation_id}_{len(st.session_state.messages)}" if st.session_state.auth_mode != "guest" else f"tts_{len(st.session_state.messages) * random.randint(0,1000)}"):
 
                 response = openai_client.audio.speech.create(
@@ -395,7 +403,10 @@ if user_message or sample:
                     input = answer,
                 )
 
-                st.audio(response.read(), format = "audio/mp3")
+                st.session_state.voice_notes[audio_key] = response.read()
+
+            if audio_key in st.session_state.voice_notes:
+                st.audio(st.session_state.voice_notes[audio_key], format = "audio/mp3")
 
         st.session_state.messages.append({
             "role": "assistant",
